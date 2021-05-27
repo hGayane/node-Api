@@ -26,23 +26,22 @@ function routes(User) {
 
   userRouter.route('/users/:userId')
     .get((req, res) => {
-        const newUser = req.user.toJSON();
+      const newUser = req.user.toJSON();
 
-        newUser.links = {}; 
-        newUser.links.FilterByName = `http://${req.headers.host}/api/users?email=${req.user.email}`;   
+      newUser.links = {};
+      newUser.links.FilterByName = `http://${req.headers.host}/api/users?email=${req.user.email}`;
 
-        return res.json(newUser);
+      return res.json(newUser);
     })
     .put((req, res) => {
       const { user } = req;
-
-     user.fname = req.body.fname;
-     user.lname = req.body.lname;
-     user.email = req.body.email;
-     user.gender = req.body.gender;
-     user.phoneNumber = req.body.phoneNumber;
-     user.address = req.body.address;
-     user.role = req.body.role;
+      user.fname = req.body.fname;
+      user.lname = req.body.lname;
+      user.email = req.body.email;
+      user.gender = req.body.gender;
+      user.phoneNumber = req.body.phoneNumber;
+      user.address = req.body.address;
+      user.role = req.body.role;
 
       req.user.save((err) => {
         if (err) {
@@ -69,13 +68,13 @@ function routes(User) {
         return res.json(user);
       });
     })
-    .delete((req,res) => {
-        req.user.remove((err) => {
-          if(err){
-           return res.send(err);
-          }
-          return res.sendStatus(204);//removed
-        });
+    .delete((req, res) => {
+      req.user.remove((err) => {
+        if (err) {
+          return res.send(err);
+        }
+        return res.sendStatus(204);//removed
+      });
     });
 
   return userRouter;

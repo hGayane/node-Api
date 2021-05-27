@@ -23,17 +23,17 @@ const Category = require('./models/categoryModel.js');
 //  User.createIndexes({ email: 1, phoneNumber: 1 }, { unique: true });
 //});
 
-const adminRouter = require('./routes/adminRouter')(Restaurant);
+const restaurantRouter = require('./routes/restaurantRouter')(Restaurant);
 const userRouter = require('./routes/userRouter')(User);
+const adminRouter = require('./routes/adminRouter');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/api', adminRouter);
-app.use('/api', userRouter);
 
-app.get('/', (req, res) => {
-  res.send('Welcome to my nodemon restaurants API');
-});
+app.use('/api', restaurantRouter);
+app.use('/api', userRouter);
+app.use('/api', adminRouter);
+
 
 app.server = app.listen(port, () => {
   console.log(`Running on port ${port}`);
