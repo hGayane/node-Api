@@ -26,32 +26,33 @@ function routes(User) {
 
   userRouter.route('/users/:userId')
     .get((req, res) => {
-        const newRestaurant = req.restaurant.toJSON();
-        const name  = req.restaurant.name.replace(' ','%20');
-        const category = req.restaurant.categories.replace(' ','%20');
+        const newUser = req.user.toJSON();
 
-        newRestaurant.links = {}; 
-        newRestaurant.links.FilterByName = `http://${req.headers.host}/api/restaurants?name=${name}`;   
-        newRestaurant.links.FilterByCategory = `http://${req.headers.host}/api/restaurants?category=${category}`;   
+        newUser.links = {}; 
+        newUser.links.FilterByName = `http://${req.headers.host}/api/users?email=${req.user.email}`;   
 
-        return res.json(newRestaurant);
+        return res.json(newUser);
     })
     .put((req, res) => {
-      const { restaurant } = req;
-      restaurant.name = req.body.name;
-      restaurant.description = req.body.description;
-      restaurant.categories = req.body.categories;
-      restaurant.workingHours = req.body.workingHours;
-      restaurant.logoImage = req.body.logoImage;
-      req.restaurant.save((err) => {
+      const { user } = req;
+
+     user.fname = req.body.fname;
+     user.lname = req.body.lname;
+     user.email = req.body.email;
+     user.gender = req.body.gender;
+     user.phoneNumber = req.body.phoneNumber;
+     user.address = req.body.address;
+     user.role = req.body.role;
+
+      req.user.save((err) => {
         if (err) {
           return res.send(err);
         }
-        return res.json(restaurant);
+        return res.json(user);
       });
     })
     .patch((req, res) => {
-      const { restaurant } = req;
+      const { user } = req;
 
       if (req.body._id) {
         delete req.body._id;
@@ -59,17 +60,17 @@ function routes(User) {
       Object.entries(req.body).forEach((item) => {
         const key = item[0];
         const value = item[1];
-        restaurant[key] = value;
+        user[key] = value;
       });
-      req.restaurant.save((err) => {
+      req.user.save((err) => {
         if (err) {
           return res.send(err);
         }
-        return res.json(restaurant);
+        return res.json(user);
       });
     })
     .delete((req,res) => {
-        req.restaurant.remove((err) => {
+        req.user.remove((err) => {
           if(err){
            return res.send(err);
           }

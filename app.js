@@ -17,10 +17,11 @@ const port = process.env.PORT || 3000;
 
 const Restaurant = require('./models/restaurantModel');
 const User = require('./models/userModel.js');
+const Category = require('./models/categoryModel.js');
 
-User.init().then(()=>{
-   User.create([{ email: 1, phoneNumber: 1 }], { unique: true }, function(err) {});
-});
+//User.init().then(()=>{
+//  User.createIndexes({ email: 1, phoneNumber: 1 }, { unique: true });
+//});
 
 const adminRouter = require('./routes/adminRouter')(Restaurant);
 const userRouter = require('./routes/userRouter')(User);

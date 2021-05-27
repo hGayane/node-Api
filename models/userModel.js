@@ -10,7 +10,10 @@ const userModel = new Schema(
     gender: {type:String},
 	  phoneNumber :  {type:String},
 	  address : {type:String},
-	  profilePicture : {type:String},
+	  profilePicture : {
+			data: {type:Buffer},
+			contentType: {type:String}
+		},
     role: {type:String}
 });
 

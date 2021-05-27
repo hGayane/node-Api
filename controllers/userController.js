@@ -2,7 +2,7 @@ function userController(User) {
 
   function post(req, res) {
     const user = new User(req.body);
-    if (!req.body.email || !req.body.phone) {
+    if (!req.body.email || !req.body.phoneNumber) {
       res.status(400);
       return res.send('Email and phone are required.');
     }
@@ -14,10 +14,10 @@ function userController(User) {
 
   function get(req, res) {
     const query = {};
-    if (req.query.name) {
-      query.name = req.query.name;
+    if (req.query.email) {
+      query.email = req.query.email;
     }
-    var mysort = { name: -1 };
+    var mysort = { fname: -1 };
     User.find(query, (err, users) => {
       if (err) {
         return res.send(err);
