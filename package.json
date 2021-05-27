@@ -8,6 +8,15 @@
     "start": "nodemon app.js",
     "test": "mocha tests/**/*Tests.js"
   },
+  "keywords": [
+    "memory",
+    "cache",
+    "secure",
+    "safe",
+    "ram",
+    "simple",
+    "storage"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
