@@ -1,4 +1,4 @@
-function restaurantController(Restaurant,rabbitMQ) {
+function restaurantController(Restaurant, rabbitMQ) {
 
   function post(req, res) {
     //const restaurant = new Restaurant(req.body);
@@ -6,11 +6,7 @@ function restaurantController(Restaurant,rabbitMQ) {
       res.status(400);
       return res.send('Name is required');
     }
-
-    //instead of saving in db queue in rabbitmq, then consumer will save it in db
     rabbitMQ("updateRestaurant", JSON.stringify(req.body));
-    //restaurant.save();
-
     res.status(201);
     return res.json(req.body);
   }
@@ -65,7 +61,7 @@ function restaurantController(Restaurant,rabbitMQ) {
     });
   }
 
-  function updateDocumentFieldsById(req, res){
+  function updateDocumentFieldsById(req, res) {
     const { restaurant } = req;
 
     if (req.body._id) {
@@ -83,16 +79,16 @@ function restaurantController(Restaurant,rabbitMQ) {
       return res.json(restaurant);
     })
   }
-  function deleteDocumentById(req,res) {
+  function deleteDocumentById(req, res) {
     req.restaurant.remove((err) => {
-      if(err){
-       return res.send(err);
+      if (err) {
+        return res.send(err);
       }
       return res.sendStatus(204);//removed
     });
-}
+  }
 
-  return { post, get, getById,updateDocumentById, updateDocumentFieldsById,deleteDocumentById};
+  return { post, get, getById, updateDocumentById, updateDocumentFieldsById, deleteDocumentById };
 }
 
 module.exports = restaurantController;

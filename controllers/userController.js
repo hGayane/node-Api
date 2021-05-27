@@ -2,11 +2,13 @@ function userController(User) {
 
   function post(req, res) {
     const user = new User(req.body);
-    if (!req.body.email || !req.body.phoneNumber) {
+    const email = req.body.email;
+    const phone = req.body.phoneNumber;
+    if (!email || !phone) {
       res.status(400);
       return res.send('Email and phone are required.');
     }
-
+  
     user.save();
     res.status(201);
     return res.json(user);
@@ -25,7 +27,7 @@ function userController(User) {
 
       const returnUsers = users.map((user) => {
         const newUser = user.toJSON();
-        newUser.links = {}; 
+        newUser.links = {};
         newUser.links.self = `http://${req.headers.host}/api/users/${user._id}`;
         return newUser;
       });

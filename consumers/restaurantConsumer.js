@@ -16,7 +16,7 @@ function restConsumer(Restaurant) {
                 durable: true
             });
 
-            console.log(`Waiting for restaurant messages in ${queue}. To exit press CTRL+C`);
+            //console.log(`Waiting for restaurant messages in ${queue}. To exit press CTRL+C`);
 
             channel.consume(queue, (data) => {
                 const restaurantData = JSON.parse(data.content.toString());

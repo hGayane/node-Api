@@ -6,8 +6,7 @@ const app = express();
 
 if (process.env.ENV === 'Test') {
   console.log('This is Test');
-  const db = mongoose.connect('mongodb://localhost/restausrantsApi_test')
-
+  const db = mongoose.connect('mongodb://localhost/restausrantsApi_test');
 } else {
   console.log('This is for real');
   const db = mongoose.connect('mongodb://localhost/restausrantsApi');
@@ -19,13 +18,12 @@ const Restaurant = require('./models/restaurantModel');
 const User = require('./models/userModel.js');
 const Category = require('./models/categoryModel.js');
 
-//User.init().then(()=>{
-//  User.createIndexes({ email: 1, phoneNumber: 1 }, { unique: true });
-//});
 const rabbitMQ = require('./rabbitMQ');
 
-const restaurantRouter = require('./routes/restaurantRouter')(Restaurant,rabbitMQ);
-const userRouter = require('./routes/userRouter')(User,rabbitMQ);
+const restaurantRouter = require('./routes/restaurantRouter')(Restaurant, rabbitMQ);
+const userRouter = require('./routes/userRouter')(User, rabbitMQ);
+const categoryRouter = require('./routes/categoryRouter')(Category,rabbitMQ);
+
 const adminRouter = require('./routes/adminRouter');
 
 const restaurantCosumer = require('./consumers/restaurantConsumer')(Restaurant);
@@ -36,8 +34,8 @@ app.use(bodyParser.json());
 app.use('/api', restaurantRouter);
 app.use('/api', userRouter);
 app.use('/api', adminRouter);
+app.use('/api', categoryRouter);
 
-//app.use(restaurantCosumer);
 
 
 app.server = app.listen(port, () => {
