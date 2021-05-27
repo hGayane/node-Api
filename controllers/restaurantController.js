@@ -1,15 +1,18 @@
-function restaurantController(Restaurant) {
+function restaurantController(Restaurant,rabbitMQ) {
 
   function post(req, res) {
-    const restaurant = new Restaurant(req.body);
+    //const restaurant = new Restaurant(req.body);
     if (!req.body.name) {
       res.status(400);
       return res.send('Name is required');
     }
 
-    restaurant.save();
+    //instead of saving in db queue in rabbitmq, then consumer will save it in db
+    rabbitMQ("updateRestaurant", JSON.stringify(req.body));
+    //restaurant.save();
+
     res.status(201);
-    return res.json(restaurant);
+    return res.json(req.body);
   }
 
   function get(req, res) {

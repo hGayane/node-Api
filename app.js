@@ -22,10 +22,13 @@ const Category = require('./models/categoryModel.js');
 //User.init().then(()=>{
 //  User.createIndexes({ email: 1, phoneNumber: 1 }, { unique: true });
 //});
+const rabbitMQ = require('./rabbitMQ');
 
-const restaurantRouter = require('./routes/restaurantRouter')(Restaurant);
-const userRouter = require('./routes/userRouter')(User);
+const restaurantRouter = require('./routes/restaurantRouter')(Restaurant,rabbitMQ);
+const userRouter = require('./routes/userRouter')(User,rabbitMQ);
 const adminRouter = require('./routes/adminRouter');
+
+const restaurantCosumer = require('./consumers/restaurantConsumer')(Restaurant);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -33,6 +36,8 @@ app.use(bodyParser.json());
 app.use('/api', restaurantRouter);
 app.use('/api', userRouter);
 app.use('/api', adminRouter);
+
+//app.use(restaurantCosumer);
 
 
 app.server = app.listen(port, () => {

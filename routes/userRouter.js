@@ -1,7 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 
-function routes(User) {
+function routes(User,rabbitMQ) {
   const userRouter = express.Router();
   const controller = userController(User);
 
