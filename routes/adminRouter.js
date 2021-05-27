@@ -2,15 +2,15 @@ const express = require('express');
 const restaurantController = require('../controllers/restaurantController');
 
 function routes(Restaurant) {
-  const restaurantRouter = express.Router();
+  const adminRouter = express.Router();
   const controller = restaurantController(Restaurant);
 
-  restaurantRouter.route('/restaurants')
+  adminRouter.route('/restaurants')
     .post(controller.post)
     .get(controller.get);
 
-  //adding middlewre for restaurantRouter
-  restaurantRouter.use('/restaurants/:restaurantId', (req, res, next) => {
+  //adding middlewre for adminRouter
+  adminRouter.use('/restaurants/:restaurantId', (req, res, next) => {
     Restaurant.findById(req.params.restaurantId, (err, restaurant) => {
       if (err) {
         return res.send(err);
@@ -23,8 +23,19 @@ function routes(Restaurant) {
     });
   });
 
-  restaurantRouter.route('/restaurants/:restaurantId')
-    .get((req, res) => res.json(req.restaurant))
+
+  adminRouter.route('/restaurants/:restaurantId')
+    .get((req, res) => {
+        const newRestaurant = req.restaurant.toJSON();
+        const name  = req.restaurant.name.replace(' ','%20');
+        const category = req.restaurant.categories.replace(' ','%20');
+
+        newRestaurant.links = {}; 
+        newRestaurant.links.FilterByName = `http://${req.headers.host}/api/restaurants?name=${name}`;   
+        newRestaurant.links.FilterByCategory = `http://${req.headers.host}/api/restaurants?category=${category}`;   
+
+        return res.json(newRestaurant);
+    })
     .put((req, res) => {
       const { restaurant } = req;
       restaurant.name = req.body.name;
@@ -66,7 +77,7 @@ function routes(Restaurant) {
         });
     });
 
-  return restaurantRouter;
+  return adminRouter;
 }
 
 module.exports = routes;

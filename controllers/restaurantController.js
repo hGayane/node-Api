@@ -2,7 +2,7 @@ function restaurantController(Restaurant) {
 
   function post(req, res) {
     const restaurant = new Restaurant(req.body);
-    if(!req.body.name){
+    if (!req.body.name) {
       res.status(400);
       return res.send('Name is required');
     }
@@ -22,7 +22,14 @@ function restaurantController(Restaurant) {
       if (err) {
         return res.send(err);
       }
-      return res.json(restaurants);
+
+      const returnRestaurants = restaurants.map((restaurant) => {
+        const newRestaurant = restaurant.toJSON();
+        newRestaurant.links = {}; 
+        newRestaurant.links.self = `http://${req.headers.host}/api/restaurants/${restaurant._id}`;
+        return newRestaurant;
+      });
+      return res.json(returnRestaurants);
     })
       .sort(mysort);
   }

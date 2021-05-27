@@ -1,0 +1,12 @@
+[
+  {
+    "fname" : "Gayane",
+    "lname" : "Hovhannisyan",
+    "email": "hovhannisyan.1794@gmail.com",
+    "gender": "Female",
+	  "phoneNumber" :  "+37495044741",
+	  "address" : "Some Address,House 777",
+	  "profilePicture" : "",
+    "role": "Admin"
+  }
+]
