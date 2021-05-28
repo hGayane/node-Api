@@ -51,17 +51,6 @@ app.use('/api', categoryRouter);
 app.use('/api', authRouter);
 
 var memoryCache = require('./memoryCache.js');
-var cache = {};
-
-app.use((req, res, next) => {
-  if (req.user) {
-    cache = memoryCache({
-      limit: 1000,
-      buckets: 3
-    });
-    next();
-  }
-});
 
 app.server = app.listen(port, () => {
   console.log(`Running on port ${port}`);
