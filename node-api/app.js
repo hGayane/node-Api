@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 
 const app = express();
-
-
 
 if (process.env.ENV === 'Test') {
   console.log('This is Test');
@@ -14,31 +15,40 @@ if (process.env.ENV === 'Test') {
   const db = mongoose.connect('mongodb://localhost/restausrantsApi');
 }
 
+const rabbitMQ = require('./rabbitMQ.js');
 const port = process.env.PORT || 3000;
 
 const Restaurant = require('./models/restaurantModel');
 const User = require('./models/userModel.js');
 const Category = require('./models/categoryModel.js');
 
-const rabbitMQ = require('./rabbitMQ.js');
-
 const restaurantRouter = require('./routes/restaurantRouter')(Restaurant);
 const userRouter = require('./routes/userRouter')(User);
 const categoryRouter = require('./routes/categoryRouter')(Category);
-
 const adminRouter = require('./routes/adminRouter')();
+const authRouter = require('./routes/authRouter')(User);
 
 const resaurantConsumers = require('./consumers/restaurantConsumer')();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.use(cookieParser());
+app.use(session(
+  {
+    secret: 'restaurant',
+    resave: true,
+    saveUninitialized: true
+  }
+));
+
+require('./config/passport.js')(app);
+
 app.use('/api', restaurantRouter);
 app.use('/api', userRouter);
 app.use('/api', adminRouter);
 app.use('/api', categoryRouter);
-
-
+app.use('/api', authRouter);
 
 app.server = app.listen(port, () => {
   console.log(`Running on port ${port}`);

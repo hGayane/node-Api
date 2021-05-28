@@ -21,7 +21,7 @@ function routes() {
                debug('Conected to servier.');
 
                const db = client.db(dbName);
-               await db.collection('users').insertMany(users);
+              // await db.collection('users').insertMany(users);
                await db.collection('categories').insertMany(categories);
                await db.collection('restaurants').insertMany(restaurants);
 

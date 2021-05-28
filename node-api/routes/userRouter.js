@@ -1,12 +1,20 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 
-function routes(User,rabbitMQ) {
+function routes(User) {
   const userRouter = express.Router();
-  const controller = userController(User,rabbitMQ);
+  const controller = userController(User);
+  
+//middleware for checking loged in
+  userRouter.use('/users',(req, res, next) => {
+    if (req.user) {
+      next();
+    } else {
+      res.send('Not Authorised. Please login to see restaurants.');
+    }
+  });
 
   userRouter.route('/users')
-    .post(controller.post)
     .get(controller.get);
 
   //adding middlewre for userRouter
@@ -22,7 +30,6 @@ function routes(User,rabbitMQ) {
       return res.sendStatus(404);
     });
   });
-
 
   userRouter.route('/users/:userId')
     .get((req, res) => {

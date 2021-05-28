@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 
 const UserModel = new Schema(
   {
+    password :{type:String},
     fname: { type: String },
     lname: { type: String },
     email: { type: String },
@@ -16,6 +17,7 @@ const UserModel = new Schema(
     },
     role: { type: String }
   });
-const index = UserModel.indexes({ email: 1, phoneNumber: 1 }, { unique: true });
 
-module.exports = mongoose.model('User', {UserModel,index});
+//const index = UserModel.indexes({ email: 1, phoneNumber: 1 }, { unique: true });
+
+module.exports = mongoose.model('User', UserModel);

@@ -2,24 +2,20 @@ const rabbitMQ = require('../rabbitMQ.js');
 
 function userController(User) {
 
-  function post(req, res) {
+  function post(req,res) {
     const user = new User(req.body);
-    const email = req.body.email;
-    const phone = req.body.phoneNumber;
-    if (!email || !phone) {
+    if (!req.body.email || !req.body.phoneNumber) {
       res.status(400);
-      return res.send('Email and phone are required.');
+      return res.send('Email, phone, username and password are required.');
     }
-  
-    user.save();
-    res.status(201);
-    return res.json(user);
+      user.save();
+      return user;
   }
 
   function get(req, res) {
     const query = {};
-    if (req.query.email) {
-      query.email = req.query.email;
+    if (req.query.username) {
+      query.username = req.query.username;
     }
     var mysort = { fname: -1 };
     User.find(query, (err, users) => {
