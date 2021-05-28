@@ -10,9 +10,16 @@ function consumeRestaurant() {
 
         const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
-        console.log(`Received restaurants: ${restaurant.name}`);
-        //save in db
-        restaurant.save();
+        console.log(`Receiving restaurants: ${restaurant.name}`);
+        try {
+          //save in db
+          restaurant.save().then(() => {
+            console.log(`Saved restaurant : ${restaurant.name}`);
+          });
+        } catch (err) {
+          throw err;
+        };
+
         //Socket Trigger All Clients
         io.socket.emit('updateRestaurant', restaurantData);
 
@@ -23,7 +30,7 @@ function consumeRestaurant() {
 
         const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
-        console.log(`Received restaurant by Id: ${restaurant.name}`);
+        console.log(`Receiving restaurant by Id: ${restaurant.name}`);
         //save in db
         restaurant.save();
         //Socket Trigger All Clients
@@ -33,9 +40,9 @@ function consumeRestaurant() {
       });
 
       broker.subscribe('updateRestaurantFieldsById', (msg, ack) => {
-        const restaurantData = JSON.parse(msg.content);   
-        const restaurant = new Restaurant(restaurantData);         
-        console.log(`Received restaurant fields by Id: ${restaurant.name}`);
+        const restaurantData = JSON.parse(msg.content);
+        const restaurant = new Restaurant(restaurantData);
+        console.log(`Receiving restaurant fields by Id: ${restaurant.name}`);
         //save in db
         restaurant.save();
         //Socket Trigger All Clients
@@ -48,7 +55,7 @@ function consumeRestaurant() {
 
         const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
-        console.log(`Removed restaurant  by Id: ${restaurant.name}`);
+        console.log(`Removing restaurant  by Id: ${restaurant.name}`);
         //remove
         restaurant.remove();
         //Socket Trigger All Clients
