@@ -1,99 +1,63 @@
 const io = require('../socket/socket');
-const amqp = require('amqplib/callback_api');
 const Restaurant = require('../models/restaurantModel');
+const RabbitMQ = require('../rabbitMQ');
 
+function consumeRestaurant() {
+  RabbitMQ.getInstance()
+    .then(broker => {
 
-function consumeupdateRestaurant(channel) {
-    var queue = 'updateRestaurant';
-    channel.assertQueue(queue, {
-        durable: true
-    });
+      broker.subscribe('updateRestaurant', (msg, ack) => {
 
-    channel.consume(queue, (data) => {
-        const restaurantData = JSON.parse(data.content.toString());
+        const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
         console.log(`Received restaurants: ${restaurant.name}`);
         //save in db
         restaurant.save();
         //Socket Trigger All Clients
-        io.socket.emit(queue, restaurantData);
-    },
-        {
-            noAck: true
-        });
-}
-function consumeUpdateRestaurantById(channel) {
-    var queue = 'updateRestaurantById';
-    channel.assertQueue(queue, {
-        durable: true
-    });
+        io.socket.emit('updateRestaurant', restaurantData);
 
-    channel.consume(queue, (data) => {
-        const restaurantData = JSON.parse(data.content.toString());
+        ack()
+      });
+
+      broker.subscribe('updateRestaurantById', (msg, ack) => {
+
+        const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
         console.log(`Received restaurant by Id: ${restaurant.name}`);
         //save in db
         restaurant.save();
         //Socket Trigger All Clients
-        io.socket.emit(queue, restaurantData);
-    },
-        {
-            noAck: true
-        });
-}
-function consumeUpdateRestaurantFieldsById(channel){
-    var queue = 'updateRestaurantFieldsById';
-    channel.assertQueue(queue, {
-      durable: true
-    });
+        io.socket.emit('updateRestaurantById', restaurantData);
 
-    channel.consume(queue, (data) => {
-      const restaurantData = JSON.parse(data.content.toString());
-      const restaurant = new Restaurant(restaurantData);
-      console.log(`Received restaurant fields by Id: ${restaurant.name}`);
-      //save in db
-      restaurant.save();
-      //Socket Trigger All Clients
-      io.socket.emit(queue, restaurantData);
-    },
-      {
-        noAck: true
+        ack()
       });
-}
-function consumeRemoveRestaurantById(channel){
-    var queue = 'removeRestaurantById';
-    channel.assertQueue(queue, {
-      durable: true
-    });
 
-    channel.consume(queue, (data) => {
-      const restaurantData = JSON.parse(data.content.toString());
-      const restaurant = new Restaurant(restaurantData);
-      console.log(`Removed restaurant  by Id: ${restaurant.name}`);
-      //remove
-      restaurant.remove();
-      //Socket Trigger All Clients
-      io.socket.emit(queue, restaurantData);
-    },
-      {
-        noAck: true
+      broker.subscribe('updateRestaurantFieldsById', (msg, ack) => {
+        const restaurantData = JSON.parse(msg.content);   
+        const restaurant = new Restaurant(restaurantData);         
+        console.log(`Received restaurant fields by Id: ${restaurant.name}`);
+        //save in db
+        restaurant.save();
+        //Socket Trigger All Clients
+        io.socket.emit('updateRestaurantFieldsById', restaurantData);
+
+        ack()
       });
-}
 
-function consumeRestaurant() {
-    amqp.connect('amqp://localhost', (error0, connection) => {
-        if (error0) {
-            throw error0;
-        }
-        connection.createChannel((error1, channel) => {
-            if (error1) {
-                throw error1;
-            }
-            consumeupdateRestaurant(channel);
-            consumeUpdateRestaurantById(channel);
-            consumeUpdateRestaurantFieldsById(channel);
-        })
+      broker.subscribe('removeRestaurantById', (msg, ack) => {
+
+        const restaurantData = JSON.parse(msg.content.toString());
+        const restaurant = new Restaurant(restaurantData);
+        console.log(`Removed restaurant  by Id: ${restaurant.name}`);
+        //remove
+        restaurant.remove();
+        //Socket Trigger All Clients
+        io.socket.emit('removeRestaurantById', restaurantData);
+
+        ack();
+      });
     });
 }
+
 module.exports = consumeRestaurant;
 

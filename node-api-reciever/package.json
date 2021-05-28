@@ -1,0 +1,35 @@
+{
+  "name": "nodeapireciever",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "start": "nodemon app.js",
+    "test": "mocha tests/**/*Tests.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lodash": "^4.17.21",
+    "nodemon": "^2.0.7"
+  },
+  "devDependencies": {
+    "amqplib": "^0.8.0",
+    "eslint": "^7.27.0",
+    "mongoose": "^5.12.11",
+    "socket.io": "^4.1.2"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 4001
+    }
+  }
+}

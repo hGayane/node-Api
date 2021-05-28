@@ -46,11 +46,9 @@ function restaurantController(Restaurant) {
 
     const newRestaurant = req.restaurant.toJSON();
     const name = req.restaurant.name.replace(' ', '%20');
-    const category = req.restaurant.categories.replace(' ', '%20');
 
     newRestaurant.links = {};
     newRestaurant.links.FilterByName = `http://${req.headers.host}/api/restaurants?name=${name}`;
-    newRestaurant.links.FilterByCategory = `http://${req.headers.host}/api/restaurants?category=${category}`;
 
     return res.json(newRestaurant);
   }
@@ -79,8 +77,8 @@ function restaurantController(Restaurant) {
       restaurant[key] = value;
     });
 
-    broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
-
+    //broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
+    restaurant.save();
     res.status(201);
     return res.json(restaurant);
 
