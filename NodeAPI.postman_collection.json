@@ -105,7 +105,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n        \"name\": \"restaurant5 - updated\",\r\n        \"description\": \"restaurant5 - updated\",\r\n        \"categories\": \"category6\",\r\n        \"workingHours\": \"12am to 2pm\",\r\n        \"logoImage\": \"\"\r\n    }",
+							"raw": "{\r\n        \"name\": \"restaurant5 - updated\",\r\n        \"description\": \"restaurant5 - updated\",\r\n        \"categories\":{\r\n        \"_id\":\"60afff272512f632d4d33ffb\",\r\n        \"body\":{\r\n            \"name\":\"Fast Food\",\r\n            \"description\":\"Delivering fast food bu order.\"\r\n            }\r\n        },\r\n        \"workingHours\": \"12am to 2pm\",\r\n        \"logoImage\": \"\"\r\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -113,7 +113,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:4000/api/restaurants/60af57cf638b8887086cac0a",
+							"raw": "http://localhost:4000/api/restaurants/60afe969c1a285416ca43da7",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -122,7 +122,7 @@
 							"path": [
 								"api",
 								"restaurants",
-								"60af57cf638b8887086cac0a"
+								"60afe969c1a285416ca43da7"
 							]
 						}
 					},
@@ -174,6 +174,26 @@
 								"api",
 								"restaurants",
 								"60af57cf638b8887086cac0a"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "initialaise db and collections",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"admin"
 							]
 						}
 					},
@@ -240,35 +260,6 @@
 								"api",
 								"restaurants",
 								"60af45146b932553c41a361c"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save new user",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": " {\r\n        \"profilePicture\": \"\",\r\n        \"fname\": \"User 1\",\r\n        \"lname\": \"User surname\",\r\n        \"email\": \"test.user.@gmail.com\",\r\n        \"gender\": \"male\",\r\n        \"phoneNumber\": \"+37496568563\",\r\n        \"address\": \"Some Address,House 666\",\r\n        \"role\": \"User\"\r\n    }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:4000/api/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"users"
 							]
 						}
 					},
@@ -358,13 +349,90 @@
 			]
 		},
 		{
-			"name": "New Request",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
-			},
-			"response": []
+			"name": "Auth",
+			"item": [
+				{
+					"name": "sign up - create users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"Gayane\",\r\n    \"password\":\"111222333\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/auth/signUp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"auth",
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "log  in",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"test@gmail.com\",\r\n    \"password\":\"fbf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/auth/signIn",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"auth",
+								"signIn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "log out",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/auth/logOut",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"auth",
+								"logOut"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

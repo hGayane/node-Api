@@ -34,7 +34,7 @@ function routes(Restaurant) {
   restaurantRouter.route('/restaurants')
     .post((req, res) => {
       adminActionsAuth(req, res);
-      controller.post
+      controller.post(req,res);
     })
     .get(controller.get);
 
@@ -42,11 +42,11 @@ function routes(Restaurant) {
     .get(controller.getById)
     .put((req, res) => {
       adminActionsAuth(req, res);
-      controller.updateDocumentById
+      controller.updateDocumentById(req,res);
     })
     .patch((req, res) => {
       adminActionsAuth(req, res);
-      controller.updateDocumentFieldsById
+      controller.updateDocumentFieldsById(req,res);
     })
     .delete((req, res) => {
       adminActionsAuth(req, res);
