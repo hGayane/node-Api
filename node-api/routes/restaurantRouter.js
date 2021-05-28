@@ -50,7 +50,7 @@ function routes(Restaurant) {
     })
     .delete((req, res) => {
       adminActionsAuth(req, res);
-      controller.deleteDocumentById
+      controller.deleteDocumentById(req,res);
     });
 
   return restaurantRouter;

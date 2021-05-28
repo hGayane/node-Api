@@ -83,9 +83,8 @@ function restaurantController(Restaurant) {
     return res.json(restaurant);
 
   }
-  //todo: with rabbitmq
   function deleteDocumentById(req, res) {
-    broker.send('removeRestaurantById', Buffer.from(JSON.stringify(req.body)));
+    broker.send('removeRestaurantById', Buffer.from(JSON.stringify(req.restaurant)));
     return res.sendStatus(204);//removed
   }
 

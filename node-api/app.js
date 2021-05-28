@@ -42,7 +42,7 @@ app.use(session(
   }
 ));
 
-require('./config/passport.js')(app);
+require('./config/passport.js')(app,User);
 
 app.use('/api', restaurantRouter);
 app.use('/api', userRouter);
