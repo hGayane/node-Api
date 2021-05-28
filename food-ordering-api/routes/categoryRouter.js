@@ -1,6 +1,6 @@
 const express = require('express');
 
-function routes(Restaurant,rabbitMQ) {
+function routes(Restaurant) {
 
   const categoryRouter = express.Router();
 

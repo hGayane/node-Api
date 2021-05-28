@@ -1,8 +1,10 @@
 const express = require('express');
 const passport = require('passport');
 
+
 function routes(User) {
   const authRouter = express.Router()
+  const cache = require('../memoryCache.js');
 
   authRouter.route('/auth/signUp')
     .post((req, res) => {
@@ -28,8 +30,12 @@ function routes(User) {
 
   authRouter.route('/auth/logOut')
     .get((req, res) => {
-        req.logout();
-        return res.send('Logged Out.');
+      req.logout()
+      if (cache) {
+        cache.clear();
+        console.log(`Memory Cache Cleared.`);
+      }
+      return res.send('Logged Out.');
     });
 
   authRouter.route('/auth/success').get((req, res) => {
