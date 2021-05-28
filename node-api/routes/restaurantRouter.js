@@ -2,10 +2,10 @@ const express = require('express');
 const restaurantController = require('../controllers/restaurantController');
 const restaurantMiddleware = require('../middleware/restaurantMiddleware');
 
-function routes(Restaurant,rabbitMQ) {
+ function routes(Restaurant) {
   const restaurantRouter = express.Router();
-  const controller = restaurantController(Restaurant,rabbitMQ);
-  const middleware = restaurantMiddleware(Restaurant,rabbitMQ);
+  const controller = restaurantController(Restaurant);
+  const middleware = restaurantMiddleware(Restaurant);
 
   restaurantRouter.route('/restaurants')
     .post(controller.post)

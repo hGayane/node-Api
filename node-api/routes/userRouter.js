@@ -3,7 +3,7 @@ const userController = require('../controllers/userController');
 
 function routes(User,rabbitMQ) {
   const userRouter = express.Router();
-  const controller = userController(User);
+  const controller = userController(User,rabbitMQ);
 
   userRouter.route('/users')
     .post(controller.post)

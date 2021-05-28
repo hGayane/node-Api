@@ -1,11 +1,21 @@
-function restaurantController(Restaurant, rabbitMQ) {
+const RabbitMQ = require('../rabbitMQ.js');
+
+function restaurantController(Restaurant) {
+  let broker = {};
+  RabbitMQ.getInstance().then((b) => {
+    broker = b;
+  }).catch(err => {
+    console.log(`There was an ${err} during connecting rabbitmq.`)
+  });
 
   function post(req, res) {
     if (!req.body.name) {
       res.status(400);
       return res.send('Name is required');
     }
-    rabbitMQ("updateRestaurant", JSON.stringify(req.body));
+
+    broker.send('updateRestaurant', Buffer.from(JSON.stringify(req.body)));
+
     res.status(201);
     return res.json(req.body);
   }
@@ -50,7 +60,9 @@ function restaurantController(Restaurant, rabbitMQ) {
       res.status(400);
       return res.send('Name is required');
     }
-    rabbitMQ("updateRestaurantById", JSON.stringify(req.body));
+
+    broker.send('updateRestaurantById', Buffer.from(JSON.stringify(req.body)));
+
     res.status(201);
     return res.json(req.body);
   }
@@ -67,19 +79,16 @@ function restaurantController(Restaurant, rabbitMQ) {
       restaurant[key] = value;
     });
 
-    rabbitMQ("updateRestaurantFieldsById", JSON.stringify(restaurant));
+    broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
+
     res.status(201);
     return res.json(restaurant);
 
   }
-
+  //todo: with rabbitmq
   function deleteDocumentById(req, res) {
-    req.restaurant.remove((err) => {
-      if (err) {
-        return res.send(err);
-      }
-      return res.sendStatus(204);//removed
-    });
+    broker.send('removeRestaurantById', Buffer.from(JSON.stringify(req.body)));
+    return res.sendStatus(204);//removed
   }
 
   return { post, get, getById, updateDocumentById, updateDocumentFieldsById, deleteDocumentById };

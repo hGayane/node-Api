@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
+
+
 if (process.env.ENV === 'Test') {
   console.log('This is Test');
   const db = mongoose.connect('mongodb://localhost/restausrantsApi_test');
@@ -18,13 +20,13 @@ const Restaurant = require('./models/restaurantModel');
 const User = require('./models/userModel.js');
 const Category = require('./models/categoryModel.js');
 
-const rabbitMQ = require('./rabbitMQ');
+const rabbitMQ = require('./rabbitMQ.js');
 
-const restaurantRouter = require('./routes/restaurantRouter')(Restaurant, rabbitMQ);
-const userRouter = require('./routes/userRouter')(User, rabbitMQ);
-const categoryRouter = require('./routes/categoryRouter')(Category,rabbitMQ);
+const restaurantRouter = require('./routes/restaurantRouter')(Restaurant);
+const userRouter = require('./routes/userRouter')(User);
+const categoryRouter = require('./routes/categoryRouter')(Category);
 
-const adminRouter = require('./routes/adminRouter');
+const adminRouter = require('./routes/adminRouter')();
 
 const resaurantConsumers = require('./consumers/restaurantConsumer')();
 

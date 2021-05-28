@@ -60,6 +60,25 @@ function consumeUpdateRestaurantFieldsById(channel){
         noAck: true
       });
 }
+function consumeRemoveRestaurantById(channel){
+    var queue = 'removeRestaurantById';
+    channel.assertQueue(queue, {
+      durable: true
+    });
+
+    channel.consume(queue, (data) => {
+      const restaurantData = JSON.parse(data.content.toString());
+      const restaurant = new Restaurant(restaurantData);
+      console.log(`Removed restaurant  by Id: ${restaurant.name}`);
+      //remove
+      restaurant.remove();
+      //Socket Trigger All Clients
+      io.socket.emit(queue, restaurantData);
+    },
+      {
+        noAck: true
+      });
+}
 
 function consumeRestaurant() {
     amqp.connect('amqp://localhost', (error0, connection) => {

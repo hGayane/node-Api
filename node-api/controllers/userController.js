@@ -1,3 +1,5 @@
+const rabbitMQ = require('../rabbitMQ.js');
+
 function userController(User) {
 
   function post(req, res) {
