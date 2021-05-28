@@ -1,7 +1,67 @@
 const io = require('../socket/socket');
 const amqp = require('amqplib/callback_api');
+const Restaurant = require('../models/restaurantModel');
 
-function restConsumer(Restaurant) {
+
+function consumeupdateRestaurant(channel) {
+    var queue = 'updateRestaurant';
+    channel.assertQueue(queue, {
+        durable: true
+    });
+
+    channel.consume(queue, (data) => {
+        const restaurantData = JSON.parse(data.content.toString());
+        const restaurant = new Restaurant(restaurantData);
+        console.log(`Received restaurants: ${restaurant.name}`);
+        //save in db
+        restaurant.save();
+        //Socket Trigger All Clients
+        io.socket.emit(queue, restaurantData);
+    },
+        {
+            noAck: true
+        });
+}
+function consumeUpdateRestaurantById(channel) {
+    var queue = 'updateRestaurantById';
+    channel.assertQueue(queue, {
+        durable: true
+    });
+
+    channel.consume(queue, (data) => {
+        const restaurantData = JSON.parse(data.content.toString());
+        const restaurant = new Restaurant(restaurantData);
+        console.log(`Received restaurant by Id: ${restaurant.name}`);
+        //save in db
+        restaurant.save();
+        //Socket Trigger All Clients
+        io.socket.emit(queue, restaurantData);
+    },
+        {
+            noAck: true
+        });
+}
+function consumeUpdateRestaurantFieldsById(channel){
+    var queue = 'updateRestaurantFieldsById';
+    channel.assertQueue(queue, {
+      durable: true
+    });
+
+    channel.consume(queue, (data) => {
+      const restaurantData = JSON.parse(data.content.toString());
+      const restaurant = new Restaurant(restaurantData);
+      console.log(`Received restaurant fields by Id: ${restaurant.name}`);
+      //save in db
+      restaurant.save();
+      //Socket Trigger All Clients
+      io.socket.emit(queue, restaurantData);
+    },
+      {
+        noAck: true
+      });
+}
+
+function consumeRestaurant() {
     amqp.connect('amqp://localhost', (error0, connection) => {
         if (error0) {
             throw error0;
@@ -10,27 +70,11 @@ function restConsumer(Restaurant) {
             if (error1) {
                 throw error1;
             }
-            var queue = 'updateRestaurant';
-
-            channel.assertQueue(queue, {
-                durable: true
-            });
-
-            //console.log(`Waiting for restaurant messages in ${queue}. To exit press CTRL+C`);
-
-            channel.consume(queue, (data) => {
-                const restaurantData = JSON.parse(data.content.toString());
-                const restaurant = new Restaurant(restaurantData);
-                console.log(`Received restaurants: ${restaurant.name}`);
-                //save in db
-                restaurant.save();
-                //Socket Trigger All Clients
-                io.socket.emit("updateRestaurant", restaurantData);
-            },  
-                {
-                    noAck: true
-                });
-        });
+            consumeupdateRestaurant(channel);
+            consumeUpdateRestaurantById(channel);
+            consumeUpdateRestaurantFieldsById(channel);
+        })
     });
 }
-module.exports = restConsumer;
+module.exports = consumeRestaurant;
+

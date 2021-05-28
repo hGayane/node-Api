@@ -26,7 +26,7 @@ const categoryRouter = require('./routes/categoryRouter')(Category,rabbitMQ);
 
 const adminRouter = require('./routes/adminRouter');
 
-const restaurantCosumer = require('./consumers/restaurantConsumer')(Restaurant);
+const resaurantConsumers = require('./consumers/restaurantConsumer')();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

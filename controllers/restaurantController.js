@@ -1,7 +1,6 @@
 function restaurantController(Restaurant, rabbitMQ) {
 
   function post(req, res) {
-    //const restaurant = new Restaurant(req.body);
     if (!req.body.name) {
       res.status(400);
       return res.send('Name is required');
@@ -47,18 +46,13 @@ function restaurantController(Restaurant, rabbitMQ) {
   }
 
   function updateDocumentById(req, res) {
-    const { restaurant } = req;
-    restaurant.name = req.body.name;
-    restaurant.description = req.body.description;
-    restaurant.categories = req.body.categories;
-    restaurant.workingHours = req.body.workingHours;
-    restaurant.logoImage = req.body.logoImage;
-    req.restaurant.save((err) => {
-      if (err) {
-        return res.send(err);
-      }
-      return res.json(restaurant);
-    });
+    if (!req.body.name) {
+      res.status(400);
+      return res.send('Name is required');
+    }
+    rabbitMQ("updateRestaurantById", JSON.stringify(req.body));
+    res.status(201);
+    return res.json(req.body);
   }
 
   function updateDocumentFieldsById(req, res) {
@@ -72,13 +66,13 @@ function restaurantController(Restaurant, rabbitMQ) {
       const value = item[1];
       restaurant[key] = value;
     });
-    req.restaurant.save((err) => {
-      if (err) {
-        return res.send(err);
-      }
-      return res.json(restaurant);
-    })
+
+    rabbitMQ("updateRestaurantFieldsById", JSON.stringify(restaurant));
+    res.status(201);
+    return res.json(restaurant);
+
   }
+
   function deleteDocumentById(req, res) {
     req.restaurant.remove((err) => {
       if (err) {
