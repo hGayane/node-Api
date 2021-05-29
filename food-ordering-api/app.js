@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
+
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -22,11 +25,11 @@ const Restaurant = require('./models/restaurantModel');
 const User = require('./models/userModel.js');
 const Category = require('./models/categoryModel.js');
 
-const restaurantRouter = require('./routes/restaurantRouter')(Restaurant,cache);
+const restaurantRouter = require('./routes/restaurantRouter')(Restaurant);
 const userRouter = require('./routes/userRouter')(User);
-const categoryRouter = require('./routes/categoryRouter')(Category,cache);
+const categoryRouter = require('./routes/categoryRouter')(Category);
 const adminRouter = require('./routes/adminRouter')();
-const authRouter = require('./routes/authRouter')(User, cache);
+const authRouter = require('./routes/authRouter')(User);
 
 require('./consumers/restaurantConsumer')();
 
