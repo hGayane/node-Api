@@ -11,9 +11,9 @@ Need to run both seperately (`npm start`) .
 
   1.NodeJs,Express
   
-  2.MongoDb (make sure you have mongo db installed locally for runing the Api's)
+  2.MongoDb (make sure you have mongo db installed locally for running the Api's)
   
-  3.RabbitMQ (make sure yo have rabbitmq configured locally for runing the Api's)
+  3.RabbitMQ (make sure you have rabbitmq configured locally for running the Api's)
   
   
 For authentication used `PassportJS` and `jsonwebtoken`.
