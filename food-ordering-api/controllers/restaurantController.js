@@ -63,10 +63,9 @@ function restaurantController(Restaurant) {
   }
 
   function updateDocumentFieldsById(req, res) {
-    broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
-    data.save();
+    broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.data)));
     res.status(201);
-    return res.json(restaurant);
+    return res.json(req.data);
   }
 
   function deleteDocumentById(req, res) {

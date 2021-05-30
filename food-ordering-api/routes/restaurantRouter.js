@@ -2,8 +2,6 @@ const express = require('express');
 const restaurantController = require('../controllers/restaurantController');
 const User = require('../models/userModel');
 
-const mongoose = require('mongoose');
-
 function routes(Restaurant, accessTokenSecret, jwt, cache) {
   const restaurantRouter = express.Router();
   const controller = restaurantController(Restaurant);
@@ -56,14 +54,16 @@ function routes(Restaurant, accessTokenSecret, jwt, cache) {
     .get(controller.getById)
     .put((req, res) => {
       adminActionsAuth(req, res);
-      if (!req.body._id)
-        req.body._id = req.params.restaurantId;
+      req.body.enetit
       controller.updateDocumentById(req, res);
     })
     .patch((req, res) => {
       adminActionsAuth(req, res);
-      if (!req.body._id)
-        req.body._id = req.params.restaurantId;
+      Object.entries(req.body).forEach((item) => {
+        const key = item[0];
+        const value = item[1];
+        req.data[key] = value;
+      });
       controller.updateDocumentFieldsById(req, res);
     })
     .delete((req, res) => {
@@ -91,7 +91,7 @@ function routes(Restaurant, accessTokenSecret, jwt, cache) {
         rate: req.body.rate,
         ratedBy: req.user._id
       });
- 
+
       controller.rateRestaurant(req, res);
     });
 
