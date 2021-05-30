@@ -18,10 +18,10 @@ function routes(Category, accessTokenSecret, jwt, cache) {
             if (err) {
                return res.sendStatus(403);
             }
-            req.user = user;
+            req.user = user.user;
             if (!cache)
                cache = require('../memoryCache.js');
-            next();
+            return next();
          });
       } else {
          res.sendStatus(401);

@@ -26,11 +26,12 @@ function restaurantController(Restaurant) {
     if (req.query.sortBy && req.query.direction) {
       let sort = req.query.sortBy;
       let direction = req.query.direction
-      sortBy = { sort: direction };
+      sortBy[sort] = direction;
+      searchRestaurantsBySort(Restaurant, sortBy, res);
     }
     if (req.query.name) {
       queryString.name = req.query.name;
-      searchRestaurantsByName(Restaurant, queryString, sortBy, res)
+      searchRestaurantsByName(Restaurant, queryString, res);
     }
     if (req.query.page) {
       let perPage = req.query.perpage ? req.query.perpage : 10;
@@ -42,8 +43,8 @@ function restaurantController(Restaurant) {
 
   function getById(req, res) {
 
-    const newRestaurant = req.restaurant.toJSON();
-    const name = req.restaurant.name.replace(' ', '%20');
+    const newRestaurant = req.data.toJSON();
+    const name = req.data.name.replace(' ', '%20');
 
     newRestaurant.links = {};
     newRestaurant.links.FilterByName = `http://${req.headers.host}/api/restaurants?name=${name}`;
@@ -56,43 +57,60 @@ function restaurantController(Restaurant) {
       res.status(400);
       return res.send('Name is required');
     }
-
     broker.send('updateRestaurantById', Buffer.from(JSON.stringify(req.body)));
-
     res.status(201);
     return res.json(req.body);
   }
 
   function updateDocumentFieldsById(req, res) {
-    const { restaurant } = req;
-
-    if (req.body._id) {
-      delete req.body._id;
-    }
-    Object.entries(req.body).forEach((item) => {
-      const key = item[0];
-      const value = item[1];
-      restaurant[key] = value;
-    });
-
-    //broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
-    restaurant.save();
+    broker.send('updateRestaurantFieldsById', Buffer.from(JSON.stringify(req.body)));
+    data.save();
     res.status(201);
     return res.json(restaurant);
-
   }
+
   function deleteDocumentById(req, res) {
-    broker.send('removeRestaurantById', Buffer.from(JSON.stringify(req.restaurant)));
+
+    broker.send('removeRestaurantById', Buffer.from(JSON.stringify(req.data)));
     return res.sendStatus(204);//removed
   }
 
-  return { post, get, getById, updateDocumentById, updateDocumentFieldsById, deleteDocumentById };
+  function addMenueToRestaurant(req, res) {
+
+    broker.send('addMenuToRestaurant', Buffer.from(JSON.stringify(req.data)));
+    res.status(201);
+    return res.json(req.data);
+  }
+
+  function rateRestaurant(req, res) {
+
+    broker.send('rateRestaurant', Buffer.from(JSON.stringify(req.data)));
+    res.status(201);
+    return res.json(req.data);
+  }
+
+  function reviewRestaurant(req, res) {
+
+    broker.send('reviewRestaurant', Buffer.from(JSON.stringify(req.data)));
+    res.status(201);
+    return res.json(req.data);
+  }
+  return { post, get, getById, updateDocumentById, updateDocumentFieldsById, deleteDocumentById, addMenueToRestaurant, rateRestaurant, reviewRestaurant };
 }
 
-function searchRestaurantsByName(Restaurant, queryString, sortBy, res) {
+function searchRestaurantsByName(Restaurant, queryString, res) {
 
   Restaurant.find(queryString,
-    async (err, restaurants) => {
+    (err, restaurants) => {
+      if (err) {
+        return res.send(err);
+      }
+      return res.json(restaurants);
+    });
+}
+function searchRestaurantsBySort(Restaurant, sortBy, res) {
+  Restaurant.find({},
+    (err, restaurants) => {
       if (err) {
         return res.send(err);
       }
@@ -100,7 +118,6 @@ function searchRestaurantsByName(Restaurant, queryString, sortBy, res) {
     })
     .sort(sortBy);
 }
-function searchRestaurantsByCatgeoryName() { }
 
 function getRestaurantsByPagination(Restaurant, queryString, res) {
 

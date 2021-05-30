@@ -29,27 +29,7 @@
 					"response": []
 				},
 				{
-					"name": "Get restaurants (with sorting)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:4000/api/restaurants",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"restaurants"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get restaurants by id",
+					"name": "Get restaurant by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -64,6 +44,83 @@
 								"api",
 								"restaurants",
 								"60af45146b932553c41a361c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all restaurants  with sorting",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwYjM0YTM4MmMzYzE0MmFmYzAxZWMwYSIsImVtYWlsIjoiZ2F5YW5lQGdtYWlsLmNvbSJ9LCJpYXQiOjE2MjIzNjUwMjB9.JtemUaf-a6qJDqtzmVlIUNzm0QgVJ5dUTY3MN5Hlgo8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/api/restaurants?sortBy=name&direction=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"restaurants"
+							],
+							"query": [
+								{
+									"key": "sortBy",
+									"value": "name"
+								},
+								{
+									"key": "direction",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get restaurants with paginatation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/restaurants?perpage=2&page=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"restaurants"
+							],
+							"query": [
+								{
+									"key": "perpage",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -180,6 +237,36 @@
 					"response": []
 				},
 				{
+					"name": "add menu to restaurant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"restaurantId\":\"60b3a93bbe9cec07b06fa414\",\r\n    \"name\":\"Menue 1\",\r\n    \"description\":\"Menue 1 desc\",\r\n    \"price\":1000,\r\n    \"image\":{\r\n        \"data\":{},\r\n        \"contenetType\":\"image/png\"\r\n    }\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/restaurants/menu",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"restaurants",
+								"menu"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "initialaise db and collections",
 					"request": {
 						"method": "GET",
@@ -198,52 +285,115 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwYjM0YTM4MmMzYzE0MmFmYzAxZWMwYSIsImVtYWlsIjoiZ2F5YW5lQGdtYWlsLmNvbSJ9LCJpYXQiOjE2MjIzODczNzZ9.Oi7dAjyeEWooq1EGYV6yxFCUSo86kuu8odxZFSfaj0M",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{secret-token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"new category 3\",\r\n    \"description\":\"new category 2 description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get categories with pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "update category by id",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"category"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete category by id",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/category/60b3aa82be9cec07b06fa415",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"category",
+								"60b3aa82be9cec07b06fa415"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "User",
 			"item": [
-				{
-					"name": "Get users by email(with sorting) Copy",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:4000/api/restaurants",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"restaurants"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get users (with sorting by fname desc)",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:4000/api/users",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "4000",
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
 				{
 					"name": "Get users  by id",
 					"request": {
@@ -345,6 +495,24 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "rate restaurant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
+				},
+				{
+					"name": "review restaurant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": null
+					},
+					"response": []
 				}
 			]
 		},
@@ -433,6 +601,12 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"variable": [
+		{
+			"key": "secret-token",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwYjM0YTM4MmMzYzE0MmFmYzAxZWMwYSIsImVtYWlsIjoiZ2F5YW5lQGdtYWlsLmNvbSJ9LCJpYXQiOjE2MjIzODM3MzF9.AFqBAttTmFhsxHW4Feq5a9YmHHPG7AP-nLFVO4m6JWE"
 		}
 	]
 }

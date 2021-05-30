@@ -6,7 +6,7 @@ function routes(User, accessTokenSecret, jwt, cache) {
   const controller = userController(User);
 
   //middleware for jwt auth
-  userRouter.use('/restaurants', (req, res, next) => {
+  userRouter.use('/users', (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (authHeader) {
@@ -16,10 +16,10 @@ function routes(User, accessTokenSecret, jwt, cache) {
         if (err) {
           return res.sendStatus(403);
         }
-        req.user = user;
+        req.user = user.user;
         if (!cache)
           cache = require('../memoryCache.js');
-        next();
+        return next();
       });
     } else {
       res.sendStatus(401);
