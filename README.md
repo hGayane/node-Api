@@ -3,7 +3,7 @@ API for ordering food from restaurants
 
 Consisted of two servies `food-ordering-api-reciever` and  `food-ordering-api`. 
 Fist one is serparatly consuming messages from RabbitMQ and updating db.
-Second one is publishing messaged to RabbitMQ and returning results from db based on api calls.
+Second one is publishing messages to RabbitMQ and returning results from db based on api calls.
 
 Need to run both seperately (`npm start`) .
 
@@ -18,8 +18,8 @@ Need to run both seperately (`npm start`) .
   
 For authentication used `PassportJS` and `jsonwebtoken`.
 
-Api routes are configure in Postman `Node-APi` collection, which is pushed allonge with code source (for sure you can play with body and query params).
+Api routes are configured in Postman `Node-APi` collection, which is pushed allong with code source (you can play with request body and query params).
 
-After running servies, can hit the route `http://localhost:4000/api/init` for initialaising db by inserting some docment examples.
+After running servies by hitting the route `http://localhost:4000/api/init` db will be initialised with some document examples.
 
 
