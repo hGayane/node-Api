@@ -20,6 +20,6 @@ For authentication used `PassportJS` and `jsonwebtoken`.
 
 Api routes are configure in Postman `Node-APi` collection, which is pushed allonge with code source.
 
-After running servies can hit the route `http://localhost:4000/api/init` for initialaising db y inserting some docment examples.
+After running servies, can hit the route `http://localhost:4000/api/init` for initialaising db by inserting some docment examples.
 
 
