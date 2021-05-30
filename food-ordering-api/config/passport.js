@@ -1,14 +1,16 @@
 const passport = require('passport');
-const { Strategy } = require('passport-local');
+const localStrategy = require('passport-local').Strategy;
+const JWTstrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
 
- function passportConfig(app, User) {
+function passportConfig(app, User) {
 
   app.use(passport.initialize());
-  app.use(passport.session());
+  //app.use(passport.session());
 
   passport.use(
     'login',
-    new Strategy(
+    new localStrategy(
       {
         usernameField: 'email',
         passwordField: 'password'
@@ -16,7 +18,6 @@ const { Strategy } = require('passport-local');
       async (email, password, done) => {
         try {
           const user = await User.findOne({ email });
-          console.log(`passport ${user}`)
 
           if (!user) {
             return done(null, false, { message: 'User not found' });
@@ -30,5 +31,7 @@ const { Strategy } = require('passport-local');
           return done(error);
         }
       }));
+
 }
+
 module.exports = passportConfig;

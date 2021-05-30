@@ -7,9 +7,9 @@ const users = require('../users.js')
 
 
 function routes() {
-   const adminRouter = express.Router();
+   const initRouter = express.Router();
 
-   adminRouter.route('/admin')
+   initRouter.route('/init')
       .get((req, res) => {
          const url = 'mongodb://localhost';
          const dbName = 'restausrantsApi';
@@ -34,7 +34,7 @@ function routes() {
         
       });
 
-   return adminRouter;
+   return initRouter;
 }
 
 module.exports = routes;

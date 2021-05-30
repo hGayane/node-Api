@@ -1,21 +1,10 @@
 const express = require('express');
 const restaurantController = require('../controllers/restaurantController');
+const User = require('../models/userModel');
 
-function routes(Restaurant) {
+function routes(Restaurant, accessTokenSecret, jwt,cache) {
   const restaurantRouter = express.Router();
   const controller = restaurantController(Restaurant);
-  var cache = {};
-  //middleware for checking loged in
-  restaurantRouter.use('/restaurants', (req, res, next) => {
-    if (req.user) {
-      cache = require('../memoryCache.js');
-      console.log(cache._get_buckets());
-      next();
-    } else {
-      res.status(401);
-      res.send('Not Authorised. Please login to be able to proceed');
-    }
-  });
 
   //adding middleware for handling restaurants by id routes
   restaurantRouter.use('/restaurants/:restaurantId', (req, res, next) => {
@@ -30,6 +19,28 @@ function routes(Restaurant) {
       return res.sendStatus(404);
     });
   });
+
+  //middleware for jwt auth
+  restaurantRouter.use('/restaurants', (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+
+      jwt.verify(token, accessTokenSecret, (err, user) => {
+        if (err) {
+          return res.sendStatus(403);
+        }
+        req.user = user;
+        if (!cache)
+          cache = require('../memoryCache.js');
+        next();
+      });
+    } else {
+      res.sendStatus(401);
+    }
+  });
+
 
   restaurantRouter.route('/restaurants')
     .post((req, res) => {
@@ -57,11 +68,16 @@ function routes(Restaurant) {
 }
 
 function adminActionsAuth(req, res) {
-  console.log(req.user.role)
-  if (!req.user.role || req.user.role !== 'Admin') {
-    res.status(401);
-    return res.send('Not Authorised to complete current procedure.');
-  }
+  User.findById(req.user._id, (err, user) => {
+    if (err) {
+      return res.send(err);
+    }
+    if (user)
+      if (!user.role || user.role !== 'Admin') {
+        res.status(401);
+        return res.send('Not Authorised to complete current procedure.');
+      }
+  })
 }
 
 module.exports = routes;

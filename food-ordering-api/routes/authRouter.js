@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-function routes(User) {
+function routes(User, accessTokenSecret) {
   const authRouter = express.Router()
   const cache = require('../memoryCache.js');
 
@@ -12,13 +12,18 @@ function routes(User) {
       try {
         //create user
         const user = new User(req.body);
-        if (!req.body.userName || !req.body.password) {
+        if (!req.body.email || !req.body.password) {
           res.status(400);
-          return res.send('Username and password are required.');
+          return res.send('email and password are required.');
         }
-        user.save();
-        req.login(user, () => {
-          res.json(user)
+        user.save((err, user) => {
+          if (err) {
+            res.status(400);
+            res.send(err);
+          }
+          req.login(user, () => {
+            res.json(user)
+          })
         });
       } catch (error) {
         return next(error);
@@ -27,38 +32,33 @@ function routes(User) {
 
 
   authRouter.route('/auth/login',).post(
+    passport.authenticate('login', { session: false }),
     async (req, res, next) => {
-      console.log('here')
-      passport.authenticate(
-        'login',
-        async (err, user, info) => {
-          try {
-            if (err || !user) {
-              const error = new Error('An error occurred.');
-              return next(error);
-            }
-            console.log('logining')
+      const user = req.user;
+      try {
+        if (!user) {
+          const error = new Error('An error occurred.');
+          return next(error);
+        }
 
-            req.login(
-              user,
-              { session: false },
-              async (error) => {
-                if (error) return next(error);
+        req.login(
+          user,
+          { session: false },
+          async (error) => {
+            if (error) return next(error);
 
-                const body = { _id: user._id, email: user.email };
-                const token = jwt.sign({ user: body }, 'TOP_SECRET');
+            const body = { _id: user._id, email: user.email };
+            const token = jwt.sign({ user: body }, accessTokenSecret);
 
-                return res.json({ token });
-              }
-            );
-          } catch (error) {
-            return next(error);
+            return res.json({ token });
           }
-        })
+        );
+      } catch (error) {
+        return next(error);
+      }
     });
 
-  authRouter.post(
-    '/auth/logOut',
+  authRouter.route('/auth/logOut',).get(
     async (req, res, next) => {
       req.logout()
       if (cache) {
@@ -67,14 +67,6 @@ function routes(User) {
       }
       return res.send('Logged Out.');
     });
-
-  authRouter.route('/auth/success').get((req, res) => {
-    res.send('Welcome Resaurant API');
-  });
-
-  authRouter.route('/auth/failure').get((req, res) => {
-    res.send('Login failed.');
-  });
 
   return authRouter;
 };

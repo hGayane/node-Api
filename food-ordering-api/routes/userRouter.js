@@ -1,21 +1,30 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 
-function routes(User) {
+function routes(User, accessTokenSecret, jwt, cache) {
   const userRouter = express.Router();
   const controller = userController(User);
-  
-//middleware for checking loged in
-  userRouter.use('/users',(req, res, next) => {
-    if (req.user) {
-      next();
+
+  //middleware for jwt auth
+  userRouter.use('/restaurants', (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+      const token = authHeader.split(' ')[1];
+
+      jwt.verify(token, accessTokenSecret, (err, user) => {
+        if (err) {
+          return res.sendStatus(403);
+        }
+        req.user = user;
+        if (!cache)
+          cache = require('../memoryCache.js');
+        next();
+      });
     } else {
-      res.send('Not Authorised. Please login to see restaurants.');
+      res.sendStatus(401);
     }
   });
-
-  userRouter.route('/users')
-    .get(controller.get);
 
   //adding middlewre for userRouter
   userRouter.use('/users/:userId', (req, res, next) => {
@@ -30,6 +39,10 @@ function routes(User) {
       return res.sendStatus(404);
     });
   });
+
+
+  userRouter.route('/users')
+    .get(controller.get);
 
   userRouter.route('/users/:userId')
     .get((req, res) => {
