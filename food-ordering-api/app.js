@@ -30,15 +30,6 @@ require('./consumers/restaurantConsumer')();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-//app.use(cookieParser());
-//app.use(session(
-//  {
-//    secret: 'restaurant',
-//    resave: true,
-//    saveUninitialized: true
-//  }
-//));
-
 
 const accessTokenSecret = 'TOP_SECRET';
 require('./config/passport.js')(app, User);

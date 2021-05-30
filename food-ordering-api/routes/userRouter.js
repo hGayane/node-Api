@@ -39,11 +39,6 @@ function routes(User, accessTokenSecret, jwt, cache) {
       return res.sendStatus(404);
     });
   });
-
-
-  userRouter.route('/users')
-    .get(controller.get);
-
   userRouter.route('/users/:userId')
     .get((req, res) => {
       const newUser = req.user.toJSON();

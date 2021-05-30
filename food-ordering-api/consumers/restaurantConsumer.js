@@ -1,4 +1,3 @@
-const io = require('../socket/socket');
 const Restaurant = require('../models/restaurantModel');
 const RabbitMQ = require('../rabbitMQ');
 

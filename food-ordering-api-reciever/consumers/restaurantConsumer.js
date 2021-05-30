@@ -1,4 +1,3 @@
-const io = require('../socket/socket');
 const Restaurant = require('../models/restaurantModel');
 const RabbitMQ = require('../rabbitMQ');
 
@@ -19,10 +18,6 @@ function consumeRestaurant() {
         } catch (err) {
           throw err;
         };
-
-        //Socket Trigger All Clients
-        io.socket.emit('updateRestaurant', restaurantData);
-
         ack()
       });
 
@@ -31,10 +26,14 @@ function consumeRestaurant() {
         const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
         console.log(`Receiving restaurant by Id: ${restaurant.name}`);
-        //save in db
-        restaurant.save();
-        //Socket Trigger All Clients
-        io.socket.emit('updateRestaurantById', restaurantData);
+        try {
+          //save in db
+          restaurant.save().then(() => {
+            console.log(`Updated restaurant : ${restaurant.name}`);
+          });
+        } catch (err) {
+          throw err;
+        };
 
         ack()
       });
@@ -43,11 +42,14 @@ function consumeRestaurant() {
         const restaurantData = JSON.parse(msg.content);
         const restaurant = new Restaurant(restaurantData);
         console.log(`Receiving restaurant fields by Id: ${restaurant.name}`);
-        //save in db
-        restaurant.save();
-        //Socket Trigger All Clients
-        io.socket.emit('updateRestaurantFieldsById', restaurantData);
-
+        try {
+          //save in db
+          restaurant.save().then(() => {
+            console.log(`Updated restaurant : ${restaurant.name}`);
+          });
+        } catch (err) {
+          throw err;
+        };
         ack()
       });
 
@@ -56,11 +58,14 @@ function consumeRestaurant() {
         const restaurantData = JSON.parse(msg.content.toString());
         const restaurant = new Restaurant(restaurantData);
         console.log(`Removing restaurant  by Id: ${restaurant.name}`);
-        //remove
-        restaurant.remove();
-        //Socket Trigger All Clients
-        io.socket.emit('removeRestaurantById', restaurantData);
-
+        try {
+          //remove from db
+          restaurant.remove().then(() => {
+            console.log(`Removed restaurant : ${category.name}`);
+          });
+        } catch (err) {
+          throw err;
+        };
         ack();
       });
     });

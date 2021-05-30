@@ -21,25 +21,23 @@ function restaurantController(Restaurant) {
   }
 
   function get(req, res) {
-    const query = {};
-    if (req.query.name) {
-      query.name = req.query.name;
+    const queryString = {};
+    const sortBy = {};
+    if (req.query.sortBy && req.query.direction) {
+      let sort = req.query.sortBy;
+      let direction = req.query.direction
+      sortBy = { sort: direction };
     }
-    var mysort = { name: -1 };
-    Restaurant.find(query, (err, restaurants) => {
-      if (err) {
-        return res.send(err);
-      }
-
-      const returnRestaurants = restaurants.map((restaurant) => {
-        const newRestaurant = restaurant.toJSON();
-        newRestaurant.links = {};
-        newRestaurant.links.self = `http://${req.headers.host}/api/restaurants/${restaurant._id}`;
-        return newRestaurant;
-      });
-      return res.json(returnRestaurants);
-    })
-      .sort(mysort);
+    if (req.query.name) {
+      queryString.name = req.query.name;
+      searchRestaurantsByName(Restaurant, queryString, sortBy, res)
+    }
+    if (req.query.page) {
+      let perPage = req.query.perpage ? req.query.perpage : 10;
+      queryString.perPage = perPage;
+      queryString.page = req.query.page;
+      getRestaurantsByPagination(Restaurant, queryString, res);
+    }
   }
 
   function getById(req, res) {
@@ -90,5 +88,36 @@ function restaurantController(Restaurant) {
 
   return { post, get, getById, updateDocumentById, updateDocumentFieldsById, deleteDocumentById };
 }
+
+function searchRestaurantsByName(Restaurant, queryString, sortBy, res) {
+
+  Restaurant.find(queryString,
+    async (err, restaurants) => {
+      if (err) {
+        return res.send(err);
+      }
+      return res.json(restaurants);
+    })
+    .sort(sortBy);
+}
+function searchRestaurantsByCatgeoryName() { }
+
+function getRestaurantsByPagination(Restaurant, queryString, res) {
+
+  const options = {
+    page: queryString.page,
+    limit: queryString.perPage
+  };
+
+  var myAggregate = Restaurant.aggregate();
+  Restaurant.aggregatePaginate(myAggregate, options, function (err, restaurants) {
+    if (err)
+      return res.send(err);
+    else {
+      return res.json(restaurants);
+    }
+  });
+}
+
 
 module.exports = restaurantController;
