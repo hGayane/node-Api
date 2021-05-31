@@ -7,7 +7,7 @@ Second one is publishing messages to RabbitMQ and returning results from db base
 
 Need to run both seperately (`npm start`) .
 
-# Used technologies:
+# Used technologies
 
   1.NodeJs,Express
   
