@@ -2,7 +2,7 @@
 API for ordering food from restaurants
 
 Consisted of two servies `food-ordering-api-reciever` and  `food-ordering-api`. 
-Fist one is serparatly consuming messages from RabbitMQ and updating db.
+First one is serparatly consuming messages from RabbitMQ and updating db.
 Second one is publishing messages to RabbitMQ and returning results from db based on api calls.
 
 Need to run both seperately (`npm start`) .
